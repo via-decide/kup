@@ -2,7 +2,33 @@
 
 The first KUP benchmark. A fully synthetic universe with exact, harness-known ground truth — chosen specifically so research *behavior* can be scored with zero ambiguity about what the correct answer actually was, before anyone brings the same architecture to a physical experiment.
 
-**Status: skeleton.** This document defines the shape of the benchmark; the environment generator, harness, and scoring implementation are not yet in this directory. See [../../roadmap/](../../roadmap/) for the reference timeline.
+**Status: executable 0.0.1 kernel; richer v1 environment/scoring remains draft.** Issue #1 implements the minimum OBSERVE → HYPOTHESIZE → TEST → MEASURE → REVISE loop with one seeded hidden combination rule, one conformance KEY fixture, and one schema-valid result record. Hidden variables, contradictory observations, weighted scoring, multi-entrant comparison, and leaderboard population remain out of scope for 0.0.1.
+
+## 0.0.1 executable kernel
+
+The 0.0.1 harness is intentionally smaller than the full benchmark described below.
+
+```text
+seed
+↓
+harness-owned hidden combination rule
+↓
+JSONL KEY protocol in a separate process
+↓
+OBSERVE / HYPOTHESIZE / TEST / MEASURE / REVISE
+↓
+final CLAIM
+↓
+post-claim evaluator reads ground truth
+↓
+canonical JSON result record + evidence trail
+```
+
+The KEY-facing protocol receives the palette and measurement outcomes, not the seed or hidden ground-truth rule. The harness reads ground truth only after the KEY has submitted its final claim and terminated. This is an interface boundary, not an adversarial OS sandbox.
+
+`keys/conformance_key.py` is a deterministic exhaustive protocol fixture used only to prove that the harness works end to end. It is **not** a reference architecture and is **not** a leaderboard entrant; `ARCHITECTURE.md` remains authoritative that KUP does not prescribe a reference KEY.
+
+Run the four executable acceptance checks in [`ACCEPTANCE.md`](ACCEPTANCE.md). A generated seed-17 result is committed under `runs/` as a concrete evidence artifact for this revision.
 
 ## The environment
 
@@ -43,5 +69,5 @@ Performance here says nothing about physical competence — sensor noise, actuat
 
 ## Interfaces (draft)
 
-- `KEY` interface: `observe()`, `propose_hypothesis(evidence)`, `request_experiment(spec)`, `receive_measurement(result)`, `commit_to_lore(claim, evidence_ref)` — exact method signatures land with the harness implementation, not fixed yet.
-- Result record format: see `competitors/README.md`.
+- `KEY` interface: 0.0.1 uses a JSONL subprocess protocol with `OBSERVE`, `HYPOTHESIZE`, `TEST`, `REVISE`, and final `CLAIM`. Richer v1 signatures remain draft until later benchmark versions require them.
+- Result record format: 0.0.1 is defined by `schema/result-record.schema.json`; leaderboard records remain governed by `competitors/README.md` when multi-entrant scoring lands.

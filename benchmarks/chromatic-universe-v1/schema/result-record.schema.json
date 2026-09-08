@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/via-decide/kup/benchmarks/chromatic-universe-v1/schema/result-record.schema.json",
+  "title": "KUP Chromatic Universe 0.0.1 Result Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "benchmarkId",
+    "harnessVersion",
+    "seed",
+    "key",
+    "execution",
+    "finalClaimedRule",
+    "groundTruthRule",
+    "comparison",
+    "passed",
+    "evidenceTrail"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "0.0.1"},
+    "benchmarkId": {"const": "chromatic-universe-v1"},
+    "harnessVersion": {"const": "0.0.1"},
+    "seed": {"type": "integer"},
+    "key": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description", "sourceRef"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "sourceRef": {"const": "keys/conformance_key.py"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["networkMode", "observeCount", "testCount"],
+      "properties": {
+        "networkMode": {"enum": ["DENIED", "UNRESTRICTED"]},
+        "observeCount": {"type": "integer", "minimum": 0},
+        "testCount": {"type": "integer", "minimum": 0}
+      }
+    },
+    "finalClaimedRule": {"$ref": "#/$defs/rule"},
+    "groundTruthRule": {"$ref": "#/$defs/rule"},
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exactMatch"],
+      "properties": {"exactMatch": {"type": "boolean"}}
+    },
+    "passed": {"type": "boolean"},
+    "evidenceTrail": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/evidenceEvent"}
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ruleType", "inputs", "output", "defaultOutcome", "commutative"],
+      "properties": {
+        "ruleType": {"const": "single-special-combination"},
+        "inputs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["RED", "GREEN", "BLUE", "YELLOW"]}
+        },
+        "output": {"enum": ["RED", "GREEN", "BLUE", "YELLOW"]},
+        "defaultOutcome": {"const": "NO_REACTION"},
+        "commutative": {"const": true}
+      }
+    },
+    "evidenceEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "phase", "request"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "phase": {"enum": ["OBSERVE", "HYPOTHESIZE", "TEST", "REVISE", "CLAIM"]},
+        "request": {"type": "object"},
+        "response": {"type": "object"},
+        "evidenceRef": {"type": "string", "pattern": "^evidence-[0-9]{4}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"phase": {"const": "OBSERVE"}}},
+          "then": {"required": ["response"]}
+        },
+        {
+          "if": {"properties": {"phase": {"const": "TEST"}}},
+          "then": {"required": ["response", "evidenceRef"]}
+        }
+      ]
+    }
+  }
+}
