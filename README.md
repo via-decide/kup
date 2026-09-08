@@ -55,6 +55,14 @@ KUP is not being published as a finished answer. It is being published as a plac
 - [benchmarks/chromatic-universe-v1/](benchmarks/chromatic-universe-v1/) — the first benchmark
 - [roadmap/](roadmap/) — where this goes after the synthetic benchmark
 
+## Ecosystem
+
+KUP does not try to own every layer of this itself. When a KUP project or entrant is missing a representation it needs — not code, the underlying understanding — that gap is meant to be filled by a dedicated capability graph rather than re-derived ad hoc inside this repo:
+
+- **[via-decide/kup-curriculum](https://github.com/via-decide/kup-curriculum)** — the canonical KUP learning graph. Representation-first, not a syllabus: every concept connects an equation/representation to its physical meaning, a cross-domain bridge, a simulation, a measurement, and an unresolved question. `KUP PROJECT → required capability → missing representation? → kup-curriculum → bounded learning path → new reusable capability → back to project.`
+
+Other repositories in the broader `via-decide` organization support parts of this work but aren't yet reviewed for public linkage from here — this section grows deliberately, not by default.
+
 ## Get started
 
 ```
